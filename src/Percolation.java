@@ -24,11 +24,12 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        if (((row > 0 && row <= n) && (col > 0 && col <= n)) && !isOpen(row, col)) {
+        if (!((row > 0 && row <= n) && (col > 0 && col <= n))) throw new IllegalArgumentException();
+        else if (!isOpen(row, col)) {
             countOpen++;
-            unblocked[(row - 1)  * n + (col - 1)] = true;
-            if (row == 1) union(row, col, n, n+ 2);
-            if (row == n) union(row, col, n, n+ 3);
+            unblocked[(row - 1) * n + (col - 1)] = true;
+            if (row == 1) union(row, col, n, n + 2);
+            if (row == n) union(row, col, n, n + 3);
             union(row, col, row, col + 1);
             union(row, col, row, col - 1);
             union(row, col, row + 1, col);
@@ -38,7 +39,9 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        if ((row > 0 && row <= n) && (col > 0 && col <= n)) {
+        boolean b = (row > 0 && row <= n) && (col > 0 && col <= n);
+        if (!(b) && (col != (n + 2) || col != (n + 3))) throw new IllegalArgumentException();
+        else if (b) {
             int i = (row - 1)  * n + (col - 1);
             return unblocked[i];
         }
@@ -48,6 +51,7 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        if (!((row > 0 && row <= n) && (col > 0 && col <= n))) throw new IllegalArgumentException();
         return root(n, n + 2) == root(row, col);
     }
 
