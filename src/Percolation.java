@@ -6,6 +6,7 @@ public class Percolation {
     private int N, n, countOpen = 0;
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int size) {
+        if (size <= 0) throw new IllegalArgumentException();
         n = size;
         N = n * n + 3;
         id = new int[N];
@@ -22,7 +23,7 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        if (!isOpen(row, col)) {
+        if ( ((row > 0 && row <= n) && (col > 0 && col <= n)) && !isOpen(row, col)) {
             countOpen++;
             unblocked[(row - 1)  * n + (col - 1)] = true;
             if (row == 1) union(row, col, n , n+ 2);
@@ -92,23 +93,4 @@ public class Percolation {
         }
     }
     // test client (optional)
-    public static void main(String[] args) {
-        int n = 2;
-        Percolation percolation = new Percolation(n);
-        System.out.println(percolation.numberOfOpenSites());
-        System.out.println(percolation.percolates());
-        //System.out.println(percolation.isFull(1,1));
-        percolation.open(1,1);
-        //System.out.println(percolation.isFull(1,1));
-        System.out.println(percolation.numberOfOpenSites());
-        System.out.println(percolation.percolates());
-        percolation.open(2,2);
-        System.out.println(percolation.numberOfOpenSites());
-        System.out.println(percolation.percolates());
-        percolation.open(1,2);
-        System.out.println(percolation.numberOfOpenSites());
-        System.out.println(percolation.percolates());
-        percolation.print();
-        System.out.println(percolation.isFull(2,1));
-    }
 }
