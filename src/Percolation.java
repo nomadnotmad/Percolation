@@ -3,13 +3,13 @@ public class Percolation {
     private int[] id;
     private int[] weight;
     private boolean[] unblocked;
-    final private int sizeArray, n;
+    private final int n;
     private int countOpen = 0;
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int size) {
         if (size <= 0) throw new IllegalArgumentException();
         n = size;
-        sizeArray = n * n + 3;
+        int sizeArray = n * n + 3;
         id = new int[sizeArray];
         weight = new int[sizeArray];
         unblocked = new boolean[sizeArray];
@@ -42,15 +42,13 @@ public class Percolation {
             int i = (row - 1)  * n + (col - 1);
             return unblocked[i];
         }
-        else if (((col == n + 2) || (col == n + 3)) && (row == n)) return true;
-            else {
-                return false;
-        }
+        else
+            return (((col == n + 2) || (col == n + 3)) && (row == n));
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        return root(n, n + 2) == root (row, col);
+        return root(n, n + 2) == root(row, col);
     }
 
     // returns the number of open sites
