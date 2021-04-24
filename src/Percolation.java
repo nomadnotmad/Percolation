@@ -24,25 +24,23 @@ public class Percolation {
     public void open(int row, int col) {
         if (!isOpen(row, col)) {
             countOpen++;
-            unblocked[(row - 1) + (col - 1) * n] = true;
-            if (col == 1) union(row, col, n + 2, n);
-            if (col == n) union(row, col, n + 3, n);
+            unblocked[(row - 1)  * n + (col - 1)] = true;
+            if (row == 1) union(row, col, n , n+ 2);
+            if (row == n) union(row, col, n , n+ 3);
             union(row, col, row, col + 1);
             union(row, col, row, col - 1);
             union(row, col, row + 1, col);
             union(row, col, row - 1, col);
         }
-        else System.out.format("\n( %d : %d ) is close \n", row, col);
     }
 
     // is the site (row, col) open?
-    //refreshed
     public boolean isOpen(int row, int col) {
         if ((row > 0 && row <= n) && (col > 0 && col <= n)) {
-            int i = (row - 1) + (col - 1) * n;
+            int i = (row - 1)  * n + (col - 1);
             return unblocked[i];
         }
-        else if (( (row == n + 2) || (row == n + 3) ) && (col == n)) return true;
+        else if (( (col == n + 2) || (col == n + 3) ) && (row == n)) return true;
             else {
                 return false;
         }
@@ -50,7 +48,7 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        if (root(n + 2, n) == root (row, col)) return true;
+        if (root(n, n + 2) == root (row, col)) return true;
         else return false;
     }
 
@@ -61,7 +59,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        if (root(n + 2, n) == root (n + 3, n)) return true;
+        if (root(n, n + 2) == root (n, n + 3)) return true;
         else return false;
     }
 
@@ -78,7 +76,7 @@ public class Percolation {
 
     private int root(int row, int col)
     {
-        int i = (row - 1) + (col - 1) * n;
+        int i = (row - 1) * n + (col - 1);
         while (i != id[i]) {
             id[i] = id[id[i]];
             i = id[i];
