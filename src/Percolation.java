@@ -5,7 +5,7 @@ public class Percolation {
     private boolean[] unblocked;
     private final int n;
     private int countOpen = 0;
-    WeightedQuickUnionUF weightedQuickUnionUFS;
+    private final WeightedQuickUnionUF weightedQuickUnionUFS;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int size) {
