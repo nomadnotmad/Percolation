@@ -1,21 +1,20 @@
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+
 public class Percolation {
 
-    private int[] id;
-    private int[] weight;
     private boolean[] unblocked;
     private final int n;
     private int countOpen = 0;
+    WeightedQuickUnionUF weightedQuickUnionUFS;
+
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int size) {
         if (size <= 0) throw new IllegalArgumentException();
         n = size;
-        int sizeArray = n * n + 3;
-        id = new int[sizeArray];
-        weight = new int[sizeArray];
+        int sizeArray = n * n + 4;
+        weightedQuickUnionUFS = new WeightedQuickUnionUF(sizeArray);
         unblocked = new boolean[sizeArray];
         for (int i = 0; i < sizeArray; i++) {
-            id[i] = i;
-            weight[i] = 1;
             unblocked[i] = false;
         }
         unblocked[sizeArray - 2] = true;
@@ -27,32 +26,27 @@ public class Percolation {
         if (!((row > 0 && row <= n) && (col > 0 && col <= n))) throw new IllegalArgumentException();
         else if (!isOpen(row, col)) {
             countOpen++;
-            unblocked[(row - 1) * n + (col - 1)] = true;
-            if (row == 1) union(row, col, n, n + 2);
-            if (row == n) union(row, col, n, n + 3);
-            union(row, col, row, col + 1);
-            union(row, col, row, col - 1);
-            union(row, col, row + 1, col);
-            union(row, col, row - 1, col);
+            int i = (row - 1) * n + (col - 1);
+            unblocked[i] = true;
+            if (row == 1) weightedQuickUnionUFS.union(i, n * n + 2);
+            if (row == n) weightedQuickUnionUFS.union(i, n * n + 3);
+            if ((col + 1 > 0 && col + 1 <= n) && (unblocked[i + 1])) weightedQuickUnionUFS.union(i, i + 1);
+            if ((col - 1 > 0 && col - 1 <= n) && (unblocked[i - 1])) weightedQuickUnionUFS.union(i, i - 1);
+            if ((row + 1 > 0 && row + 1 <= n) && (unblocked[i + n])) weightedQuickUnionUFS.union(i, i + n);
+            if ((row - 1 > 0 && row - 1 <= n) && (unblocked[i - n])) weightedQuickUnionUFS.union(i, i - n);
         }
     }
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
-        boolean b = (row > 0 && row <= n) && (col > 0 && col <= n);
-        if (!(b) && (col != (n + 2) || col != (n + 3))) throw new IllegalArgumentException();
-        else if (b) {
-            int i = (row - 1)  * n + (col - 1);
-            return unblocked[i];
-        }
-        else
-            return (((col == n + 2) || (col == n + 3)) && (row == n));
+        if (!((row > 0 && row <= n) && (col > 0 && col <= n))) throw new IllegalArgumentException();
+        return unblocked[(row - 1) * n + (col - 1)];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         if (!((row > 0 && row <= n) && (col > 0 && col <= n))) throw new IllegalArgumentException();
-        return root(n, n + 2) == root(row, col);
+        return weightedQuickUnionUFS.find((row - 1) * n + (col - 1)) == weightedQuickUnionUFS.find(n * n + 2);
     }
 
     // returns the number of open sites
@@ -62,34 +56,11 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return root(n, n + 2) == root(n, n + 3);
+        return weightedQuickUnionUFS.find(n * n + 2) == weightedQuickUnionUFS.find(n * n + 3);
     }
 
-    private void union(int rowCen, int colCen, int rowOut, int colOut) {
-        if (isOpen(rowOut, colOut)) {
-            int i = root(rowCen, colCen);
-            int j = root(rowOut, colOut);
-            if (i == j) return;
-            if (weight[i] < weight[j]) {
-                id[i] = j;
-                weight[j] += weight[i];
-            }
-            else {
-                id[j] = i;
-                weight[i] += weight[j];
-            }
 
-        }
-    }
-
-    private int root(int row, int col)
-    {
-        int i = (row - 1) * n + (col - 1);
-        while (i != id[i]) {
-            id[i] = id[id[i]];
-            i = id[i];
-        }
-        return i;
-    }
     // test client (optional)
+
+
 }

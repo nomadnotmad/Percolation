@@ -5,7 +5,7 @@ public class PercolationStats {
     private static final double CONFIDENCE_95 = 1.96;
     private final double[] opened;
     private final int trialsT;
-    private double mean, stddev;
+    private final double mean, stddev;
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) throw new IllegalArgumentException();
@@ -17,21 +17,21 @@ public class PercolationStats {
             while (!percolation.percolates()) {
                 row = StdRandom.uniform(1, trialsT + 1);
                 col = StdRandom.uniform(1, trialsT + 1);
-                if (!percolation.isOpen(row, col)) percolation.open(row, col);
+                percolation.open(row, col);
             }
             opened[i] = (double) percolation.numberOfOpenSites() / (n * n);
         }
+        mean = StdStats.mean(opened);
+        stddev = StdStats.stddev(opened);
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        mean = StdStats.mean(opened);
         return mean;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        stddev = StdStats.stddev(opened);
         return stddev;
     }
 
